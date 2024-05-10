@@ -1,0 +1,32 @@
+<div id="chatroom_container" class="row">
+  <div id="side_panel" class="col-md-4 col-sm-4">
+    <%= render "layouts/flash" %>
+    <h1>Live chat</h1>
+    <h5>Hi <%= current_user.username %></h5>
+    <%= link_to "Sign out", destroy_user_session_path, data: { turbo_method: :delete } %>
+    <h4> Users </h4>
+    <div id="users">
+      <%= turbo_stream_from "users" %>
+      <%= render @users %>
+    </div>
+    <h4> Rooms </h4>
+    <%= turbo_stream_from "rooms" %>
+    <%= render "rooms/form", room: @room %>
+    <div id="rooms">
+      <%= render @rooms%>
+    </div>
+  </div>
+  <div id="room_container"
+       class="col-md-8 col-sm-8 bg-dark text-light">
+    <% if @single_room %>
+      <div id="single_room">
+        <h4 class="text-center"> <%= @user&.username || @single_room.name %> </h4>
+        <%= turbo_stream_from @single_room %>
+        <div id="messages" data-controller="reset_scroll">
+          <%= render @messages %>
+        </div>
+        <%= render "messages/form", room: @single_room, message: @message %>
+      </div>
+    <% end %>
+  </div>
+</div>
